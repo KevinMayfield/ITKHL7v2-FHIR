@@ -1,0 +1,4 @@
+# Simple handling of HL7 v2 and conversion to HL7 FHIR Bundle.
+
+When the app starts it copies two ITK HL7 v2 messages to /HL7v2/In folder and copies them to /HL7v2/Out
+
