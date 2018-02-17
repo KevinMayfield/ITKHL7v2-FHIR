@@ -102,6 +102,12 @@
       <version>${hapi-fhir-version}</version>
     </dependency>
 
+    <!-- hawtio -->
+    <dependency>
+      <groupId>io.hawt</groupId>
+      <artifactId>hawtio-springboot</artifactId>
+      <version>1.5.1</version>
+    </dependency>
 
     <!-- test
     <dependency>
@@ -122,6 +128,22 @@
 
   <build>
     <plugins>
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring-boot-version}</version>
+        <configuration>
+          <mainClass>mayfieldis.fhir.hl7v2.CamelApplication</mainClass>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <!-- Tell Maven which Java source version you want to use -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -145,6 +167,15 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>io.hawt</groupId>
+        <artifactId>hawtio-maven-plugin</artifactId>
+        <version>1.5.1</version>
+        <configuration>
+          <mainClass>mayfieldis.fhir.hl7v2.CamelApplication</mainClass>
+        </configuration>
       </plugin>
 
 

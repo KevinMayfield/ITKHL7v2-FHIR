@@ -17,10 +17,16 @@
 package mayfieldis.fhir.hl7v2;
 
 
+import io.hawt.config.ConfigFacade;
+import io.hawt.web.AuthenticationFilter;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.hl7.HL7MLLPCodec;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.impl.DefaultCamelContextNameStrategy;
+import org.apache.camel.impl.DefaultManagementNameStrategy;
 import org.apache.camel.impl.SimpleRegistry;
+import org.apache.camel.spi.ManagementNameStrategy;
+import org.apache.camel.spring.boot.CamelContextConfiguration;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -40,6 +46,7 @@ public class CamelApplication {
      */
     public static void main(String[] args) {
         System.getProperties().put( "server.port", 8083 );
+        System.setProperty(AuthenticationFilter.HAWTIO_AUTHENTICATION_ENABLED, "false");
         SpringApplication.run(CamelApplication.class, args);
     }
 
@@ -77,7 +84,39 @@ public class CamelApplication {
         }
         return null;
     }
+    /**
+     * Set things up to be in offline mode.
+     */
+    @Bean
+    public ConfigFacade configFacade() {
+        System.setProperty("hawtio.offline", "true");
+        return ConfigFacade.getSingleton();
+    }
 
+    @Bean
+    CamelContextConfiguration contextConfiguration() {
+        return new CamelContextConfiguration() {
+
+            @Override
+            public void beforeApplicationStart(CamelContext camelContext) {
+
+                camelContext.setNameStrategy(new DefaultCamelContextNameStrategy("HL7v2FHIRExample"));
+
+                final org.apache.camel.impl.SimpleRegistry registry = new org.apache.camel.impl.SimpleRegistry();
+                final org.apache.camel.impl.CompositeRegistry compositeRegistry = new org.apache.camel.impl.CompositeRegistry();
+                compositeRegistry.addRegistry(camelContext.getRegistry());
+                compositeRegistry.addRegistry(registry);
+                ((org.apache.camel.impl.DefaultCamelContext) camelContext).setRegistry(compositeRegistry);
+                registry.put("hl7codec", new HL7MLLPCodec());
+
+            }
+
+            @Override
+            public void afterApplicationStart(CamelContext camelContext) {
+
+            }
+        };
+    }
 
 }
 //CHECKSTYLE:ON

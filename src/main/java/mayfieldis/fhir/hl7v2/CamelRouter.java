@@ -25,6 +25,9 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.hl7.HL7DataFormat;
 
 import org.apache.camel.component.hl7.HL7MLLPCodec;
+import org.apache.camel.impl.DefaultManagementNameStrategy;
+import org.apache.camel.spi.CamelContextNameStrategy;
+import org.apache.camel.spi.ManagementNameStrategy;
 import org.springframework.stereotype.Component;
 import static org.apache.camel.component.hl7.HL7.ack;
 
@@ -43,13 +46,9 @@ public class CamelRouter extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        CamelContext camelContext = getContext();
-        final org.apache.camel.impl.SimpleRegistry registry = new org.apache.camel.impl.SimpleRegistry();
-        final org.apache.camel.impl.CompositeRegistry compositeRegistry = new org.apache.camel.impl.CompositeRegistry();
-        compositeRegistry.addRegistry(camelContext.getRegistry());
-        compositeRegistry.addRegistry(registry);
-        ((org.apache.camel.impl.DefaultCamelContext) camelContext).setRegistry(compositeRegistry);
-        registry.put("hl7codec", new HL7MLLPCodec());
+       // CamelContext camelContext = getContext();
+
+
 
         HapiContext hapiContext = new DefaultHapiContext();
 
@@ -60,12 +59,12 @@ public class CamelRouter extends RouteBuilder {
         hl7.setHapiContext(hapiContext);
 
         from("file:///HL7v2/In")
-                .routeId("file")
+                .routeId("inputFile")
                 .to("direct:Output");
 
 
         from("mina2:tcp://0.0.0.0:8888?sync=true&disconnectOnNoReply=false&codec=#hl7codec")
-                .routeId("HL7v2 TCP Feed")
+                .routeId("inputMLLPport8888")
                 .unmarshal(hl7)
                 .choice()
                     .when(header("CamelHL7MessageType").isEqualTo("ADT"))
@@ -75,7 +74,7 @@ public class CamelRouter extends RouteBuilder {
                 .transform(ack());
 
         from("direct:ADT")
-                .routeId("adtRoute")
+                .routeId("routeADT")
                 .marshal(hl7)
                 .to("direct:Output");
 
