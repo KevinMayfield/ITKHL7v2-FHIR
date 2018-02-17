@@ -6,9 +6,16 @@ import ca.uhn.hl7v2.util.Terser;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
+import org.apache.camel.component.file.GenericFile;
+import org.apache.commons.io.IOUtils;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 
 
@@ -38,15 +45,25 @@ public class HL7v2A05toFHIRBundle implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
 
-        FhirContext ctx = FhirContext.forDstu3();
 
-        Bundle bundle = new Bundle();
-        String hl7v2Message = (String) exchange.getIn().getBody();
+
+        Object body = exchange.getIn().getBody();
+        InputStream inputStream = null;
+        if (body instanceof GenericFile) {
+            GenericFile<File> file = (GenericFile<File>) body;
+            inputStream = new FileInputStream(file.getFile());
+        }
+
+        String hl7v2Message = IOUtils.toString(inputStream, "UTF-8");
+
 
         // TODO Insert conversion of Hl7v2 to Bundle here
         System.out.println(hl7v2Message);
+        FhirContext ctx = FhirContext.forDstu3();
+        Bundle bundle = new Bundle();
 
         String Response = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
+
 
         exchange.getIn().setHeader(Exchange.HTTP_PATH,"/Bundle");
         exchange.getIn().setHeader(Exchange.HTTP_METHOD, "POST");

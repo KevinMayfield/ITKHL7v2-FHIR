@@ -54,7 +54,6 @@ public class CamelApplication {
         ClassLoader classLoader = getContextClassLoader();
 
 
-
         try {
             File file = new File(classLoader.getResource("HL7v2").getFile());
 
@@ -79,16 +78,6 @@ public class CamelApplication {
         return null;
     }
 
-
-    @Bean
-    public CamelContext context() {
-        CamelContext camelContext;
-        SimpleRegistry reg = new SimpleRegistry();
-        reg.put("hl7codec", new HL7MLLPCodec());
-        camelContext = new DefaultCamelContext(reg);
-        return camelContext;
-
-    }
 
 }
 //CHECKSTYLE:ON
