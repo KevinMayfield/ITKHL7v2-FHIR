@@ -19,15 +19,8 @@ package mayfieldis.fhir.hl7v2;
 import ca.uhn.hl7v2.DefaultHapiContext;
 import ca.uhn.hl7v2.HapiContext;
 import mayfieldis.fhir.hl7v2.Processor.HL7v2A05toFHIRBundle;
-
-import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.hl7.HL7DataFormat;
-
-import org.apache.camel.component.hl7.HL7MLLPCodec;
-import org.apache.camel.impl.DefaultManagementNameStrategy;
-import org.apache.camel.spi.CamelContextNameStrategy;
-import org.apache.camel.spi.ManagementNameStrategy;
 import org.springframework.stereotype.Component;
 import static org.apache.camel.component.hl7.HL7.ack;
 
@@ -45,10 +38,6 @@ public class CamelRouter extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-
-       // CamelContext camelContext = getContext();
-
-
 
         HapiContext hapiContext = new DefaultHapiContext();
 
