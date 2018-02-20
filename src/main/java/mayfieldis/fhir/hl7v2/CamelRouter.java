@@ -33,28 +33,28 @@ import static org.apache.camel.component.hl7.HL7.ack;
 @Component
 public class CamelRouter extends RouteBuilder {
 
-
+    public HapiContext hapiContext;
 
 
     @Override
     public void configure() throws Exception {
 
-        HapiContext hapiContext = new DefaultHapiContext();
+        hapiContext = new DefaultHapiContext();
 
         hapiContext.getParserConfiguration().setValidating(false);
         HL7DataFormat hl7 = new HL7DataFormat();
-        HL7v2A05toFHIRBundle hl7v2A05toFHIRBundle = new HL7v2A05toFHIRBundle();
+        HL7v2A05toFHIRBundle hl7v2A05toFHIRBundle = new HL7v2A05toFHIRBundle(hapiContext);
 
         hl7.setHapiContext(hapiContext);
 
         from("file:///HL7v2/In")
                 .routeId("inputFile")
+                .unmarshal(hl7)
                 .to("direct:Output");
 
 
         from("mina2:tcp://0.0.0.0:8888?sync=true&disconnectOnNoReply=false&codec=#hl7codec")
                 .routeId("inputMLLPport8888")
-                .unmarshal(hl7)
                 .choice()
                     .when(header("CamelHL7MessageType").isEqualTo("ADT"))
                         .wireTap("direct:ADT")
@@ -64,7 +64,7 @@ public class CamelRouter extends RouteBuilder {
 
         from("direct:ADT")
                 .routeId("routeADT")
-                .marshal(hl7)
+
                 .to("direct:Output");
 
 
