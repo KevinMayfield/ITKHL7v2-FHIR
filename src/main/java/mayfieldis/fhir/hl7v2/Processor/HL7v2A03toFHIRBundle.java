@@ -3,21 +3,15 @@ package mayfieldis.fhir.hl7v2.Processor;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.HapiContext;
-import ca.uhn.hl7v2.model.AbstractMessage;
-import ca.uhn.hl7v2.model.v24.message.ADT_A01;
-import ca.uhn.hl7v2.model.v24.message.ADT_A02;
+import ca.uhn.hl7v2.model.v24.message.ADT_A03;
 import ca.uhn.hl7v2.model.v24.message.ADT_A05;
 import ca.uhn.hl7v2.parser.DefaultXMLParser;
 import ca.uhn.hl7v2.parser.XMLParser;
 import ca.uhn.hl7v2.util.Terser;
-import com.openMap1.mapper.FHIRTransforms.BaseTransformer;
 import com.openMap1.mapper.FHIRTransforms.V2Transform;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.camel.component.file.GenericFile;
-import org.apache.commons.io.IOUtils;
 import org.hl7.fhir.dstu3.model.BaseResource;
-import org.hl7.fhir.dstu3.model.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -25,23 +19,18 @@ import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.StringReader;
 
 
-public class HL7v2A05toFHIRBundle implements Processor {
+public class HL7v2A03toFHIRBundle implements Processor {
 
-    private static final Logger log = LoggerFactory.getLogger(HL7v2A05toFHIRBundle.class);
-
+    private static final Logger log = LoggerFactory.getLogger(HL7v2A03toFHIRBundle.class);
 
     private HapiContext hapiContext;
 
-    public HL7v2A05toFHIRBundle(HapiContext hapiContext) {
+    public HL7v2A03toFHIRBundle(HapiContext hapiContext) {
         this.hapiContext = hapiContext;
     }
-
 
 
     @Override
@@ -49,14 +38,15 @@ public class HL7v2A05toFHIRBundle implements Processor {
 
         Object body = exchange.getIn().getBody();
 
-        log.debug("In A05 "+exchange.getIn().getHeader("CamelHL7TriggerEvent"));
+        log.debug("In A03 "+exchange.getIn().getHeader("CamelHL7TriggerEvent"));
+
 
         String response=  null;
         String hl7v2XMLMessage = null;
 
 
-        if (body instanceof ADT_A05) {
-            ADT_A05 v24message = (ADT_A05) body;
+        if (body instanceof ADT_A03) {
+            ADT_A03 v24message = (ADT_A03) body;
 
             XMLParser xmlParser = new DefaultXMLParser();
             //encode message in XML

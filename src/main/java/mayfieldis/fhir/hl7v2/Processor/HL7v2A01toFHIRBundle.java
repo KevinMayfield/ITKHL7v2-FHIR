@@ -10,14 +10,10 @@ import ca.uhn.hl7v2.model.v24.message.ADT_A05;
 import ca.uhn.hl7v2.parser.DefaultXMLParser;
 import ca.uhn.hl7v2.parser.XMLParser;
 import ca.uhn.hl7v2.util.Terser;
-import com.openMap1.mapper.FHIRTransforms.BaseTransformer;
 import com.openMap1.mapper.FHIRTransforms.V2Transform;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.camel.component.file.GenericFile;
-import org.apache.commons.io.IOUtils;
 import org.hl7.fhir.dstu3.model.BaseResource;
-import org.hl7.fhir.dstu3.model.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -25,20 +21,16 @@ import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.StringReader;
 
 
-public class HL7v2A05toFHIRBundle implements Processor {
+public class HL7v2A01toFHIRBundle implements Processor {
 
-    private static final Logger log = LoggerFactory.getLogger(HL7v2A05toFHIRBundle.class);
-
+    private static final Logger log = LoggerFactory.getLogger(HL7v2A01toFHIRBundle.class);
 
     private HapiContext hapiContext;
 
-    public HL7v2A05toFHIRBundle(HapiContext hapiContext) {
+    public HL7v2A01toFHIRBundle(HapiContext hapiContext) {
         this.hapiContext = hapiContext;
     }
 
@@ -49,14 +41,15 @@ public class HL7v2A05toFHIRBundle implements Processor {
 
         Object body = exchange.getIn().getBody();
 
-        log.debug("In A05 "+exchange.getIn().getHeader("CamelHL7TriggerEvent"));
+        log.debug("In A01 "+exchange.getIn().getHeader("CamelHL7TriggerEvent")+ " Not Implemented");
+
 
         String response=  null;
         String hl7v2XMLMessage = null;
 
 
-        if (body instanceof ADT_A05) {
-            ADT_A05 v24message = (ADT_A05) body;
+        if (body instanceof ADT_A01) {
+            ADT_A01 v24message = (ADT_A01) body;
 
             XMLParser xmlParser = new DefaultXMLParser();
             //encode message in XML
@@ -65,7 +58,6 @@ public class HL7v2A05toFHIRBundle implements Processor {
             //print XML-encoded message to standard out
             System.out.println(hl7v2XMLMessage);
         }
-
 
 
         if (hl7v2XMLMessage !=null) {
@@ -83,6 +75,7 @@ public class HL7v2A05toFHIRBundle implements Processor {
             response = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(result);
 
         }
+
 
         exchange.getIn().setHeader(Exchange.HTTP_PATH,"/Bundle");
         exchange.getIn().setHeader(Exchange.HTTP_METHOD, "POST");

@@ -43,8 +43,8 @@ public BaseResource transform(Document sDoc) throws Exception
 */
 protected BaseResource topRule(Element sourceTop) throws Exception
 {
-    if (!("ADT_A05".equals(getName(sourceTop))))
-        throw new Exception("Root element is not named 'ADT_A05'");
+   // if (!("ADT_A05".equals(getName(sourceTop))))
+   //     throw new Exception("Root element is not named 'ADT_A05'");
     Bundle target = new Bundle();
 
     List<Element> stack1 = push(sourceTop, new Vector<Element>());

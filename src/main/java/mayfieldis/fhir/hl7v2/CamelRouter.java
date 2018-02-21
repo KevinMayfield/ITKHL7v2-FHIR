@@ -18,6 +18,8 @@ package mayfieldis.fhir.hl7v2;
 
 import ca.uhn.hl7v2.DefaultHapiContext;
 import ca.uhn.hl7v2.HapiContext;
+import mayfieldis.fhir.hl7v2.Processor.HL7v2A01toFHIRBundle;
+import mayfieldis.fhir.hl7v2.Processor.HL7v2A03toFHIRBundle;
 import mayfieldis.fhir.hl7v2.Processor.HL7v2A05toFHIRBundle;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.hl7.HL7DataFormat;
@@ -44,13 +46,15 @@ public class CamelRouter extends RouteBuilder {
         hapiContext.getParserConfiguration().setValidating(false);
         HL7DataFormat hl7 = new HL7DataFormat();
         HL7v2A05toFHIRBundle hl7v2A05toFHIRBundle = new HL7v2A05toFHIRBundle(hapiContext);
+        HL7v2A01toFHIRBundle hl7v2A01toFHIRBundle = new HL7v2A01toFHIRBundle(hapiContext);
+        HL7v2A03toFHIRBundle hl7v2A03toFHIRBundle = new HL7v2A03toFHIRBundle(hapiContext);
 
         hl7.setHapiContext(hapiContext);
 
         from("file:///HL7v2/In")
                 .routeId("inputFile")
                 .unmarshal(hl7)
-                .to("direct:Output");
+                .to("direct:ADT");
 
 
         from("mina2:tcp://0.0.0.0:8888?sync=true&disconnectOnNoReply=false&codec=#hl7codec")
@@ -64,13 +68,28 @@ public class CamelRouter extends RouteBuilder {
 
         from("direct:ADT")
                 .routeId("routeADT")
-
+                .choice()
+                    .when(header("CamelHL7TriggerEvent").isEqualTo("A28"))
+                        .process(hl7v2A05toFHIRBundle)
+                        .endChoice()
+                    .when(header("CamelHL7TriggerEvent").isEqualTo("A31"))
+                        .process(hl7v2A05toFHIRBundle)
+                        .endChoice()
+                    .when(header("CamelHL7TriggerEvent").isEqualTo("A01"))
+                        .process(hl7v2A01toFHIRBundle)
+                        .endChoice()
+                    .when(header("CamelHL7TriggerEvent").isEqualTo("A04"))
+                        .process(hl7v2A01toFHIRBundle)
+                        .endChoice()
+                    .when(header("CamelHL7TriggerEvent").isEqualTo("A03"))
+                        .process(hl7v2A03toFHIRBundle)
+                        .endChoice()
+                .end()
                 .to("direct:Output");
 
 
         from("direct:Output")
                 .routeId("output")
-                .process(hl7v2A05toFHIRBundle)
                 .to("file:///HL7v2/Out");
 
     }
