@@ -89,7 +89,7 @@ protected void pBirthDate(List<Element> stack, Patient t_resource_Patient) throw
         List<Element> stack1 = push(sPID_1,stack);
 
         Node sBirthDate = namedChildNode(sPID_1,"TS.1");
-        if (sBirthDate != null) t_resource_Patient.setBirthDate(new Date(FHIRConverters.date_V2_to_FHIR(null,getText(sBirthDate))));
+        //if (sBirthDate != null) t_resource_Patient.setBirthDate(new Date(FHIRConverters.date_V2_to_FHIR(null,getText(sBirthDate))));
     }
 }
 
