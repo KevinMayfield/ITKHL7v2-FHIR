@@ -69,7 +69,7 @@ public class CamelApplication {
 
                 Path FROM = Paths.get(fileD.getAbsolutePath());
 
-                Path TO = Paths.get("/HL7v2/In/" + fileD.getName());
+                Path TO = Paths.get("///HL7v2/In/" + fileD.getName());
                 //overwrite existing file, if exists
                 CopyOption[] options = new CopyOption[]{
                         StandardCopyOption.REPLACE_EXISTING,
