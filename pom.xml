@@ -140,7 +140,7 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>${spring-boot-version}</version>
         <configuration>
-          <mainClass>mayfieldis.fhir.hl7v2.CamelApplication</mainClass>
+          <mainClass>mayfieldis.fhir.hl7v2.ITKHl7v2CamelApplication</mainClass>
         </configuration>
         <executions>
           <execution>
@@ -180,7 +180,7 @@
         <artifactId>hawtio-maven-plugin</artifactId>
         <version>1.5.1</version>
         <configuration>
-          <mainClass>mayfieldis.fhir.hl7v2.CamelApplication</mainClass>
+          <mainClass>mayfieldis.fhir.hl7v2.ITKHl7v2CamelApplication</mainClass>
         </configuration>
       </plugin>
 

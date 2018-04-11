@@ -21,11 +21,7 @@ import io.hawt.config.ConfigFacade;
 import io.hawt.web.AuthenticationFilter;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.hl7.HL7MLLPCodec;
-import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.impl.DefaultCamelContextNameStrategy;
-import org.apache.camel.impl.DefaultManagementNameStrategy;
-import org.apache.camel.impl.SimpleRegistry;
-import org.apache.camel.spi.ManagementNameStrategy;
 import org.apache.camel.spring.boot.CamelContextConfiguration;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -39,7 +35,7 @@ import java.nio.file.*;
 //CHECKSTYLE:OFF
 
 @SpringBootApplication
-public class CamelApplication {
+public class ITKHl7v2CamelApplication {
 
     /**
      * A main method to start this application.
@@ -47,7 +43,7 @@ public class CamelApplication {
     public static void main(String[] args) {
         System.getProperties().put( "server.port", 8083 );
         System.setProperty(AuthenticationFilter.HAWTIO_AUTHENTICATION_ENABLED, "false");
-        SpringApplication.run(CamelApplication.class, args);
+        SpringApplication.run(ITKHl7v2CamelApplication.class, args);
     }
 
     private ClassLoader getContextClassLoader() {
@@ -69,7 +65,7 @@ public class CamelApplication {
 
                 Path FROM = Paths.get(fileD.getAbsolutePath());
 
-                Path TO = Paths.get("///HL7v2/In/" + fileD.getName());
+                Path TO = Paths.get("C:/HL7v2/In/" + fileD.getName());
                 //overwrite existing file, if exists
                 CopyOption[] options = new CopyOption[]{
                         StandardCopyOption.REPLACE_EXISTING,

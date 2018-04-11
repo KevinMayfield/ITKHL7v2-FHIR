@@ -10,14 +10,12 @@ import ca.uhn.hl7v2.model.v24.message.ADT_A05;
 import ca.uhn.hl7v2.parser.DefaultXMLParser;
 import ca.uhn.hl7v2.parser.XMLParser;
 import ca.uhn.hl7v2.util.Terser;
-import com.openMap1.mapper.FHIRTransforms.BaseTransformer;
-import com.openMap1.mapper.FHIRTransforms.V2Transform;
+
+//import com.openMap1.mapper.FHIRTransforms.V2Transform;
+import com.openMap1.mapper.FHIRTransforms.ADTTransform;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.camel.component.file.GenericFile;
-import org.apache.commons.io.IOUtils;
 import org.hl7.fhir.dstu3.model.BaseResource;
-import org.hl7.fhir.dstu3.model.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -72,7 +70,8 @@ public class HL7v2A05toFHIRBundle implements Processor {
             Document doc = convertStringToDocument(hl7v2XMLMessage);
 
             // make an instance to run the transform
-            V2Transform transformer = new V2Transform();
+            //V2Transform transformer = new V2Transform();
+            ADTTransform transformer = new ADTTransform();
 
             // run the transform, and trace the HAPI class of the result
             BaseResource result = transformer.transform(doc);
